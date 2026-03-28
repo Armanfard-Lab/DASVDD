@@ -22,9 +22,7 @@ def tune_gamma(AE,in_shape,criterion,train_loader,device = torch.device("cuda" i
         outputs,code = model(batch_features)
         R += torch.sum((code.to(device)) ** 2, dim=1)[0]
         RE += criterion(outputs,batch_features)
-    R = R/len(train_loader)
-    RE = RE/len(train_loader)
-    gamma += RE/R
+    gamma += (RE/R)/N
 
   gamma = gamma/T
   gamma = gamma.detach().item()
