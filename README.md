@@ -1,29 +1,105 @@
-# DASVDD: Deep Autoencoding Support Vector Data Descriptor for Anomaly Detection
+# DASVDD
 
-PyTorch implementation of DASVDD.
+Implementation of **DASVDD (Deep Autoencoding Support Vector Data Descriptor)** for anomaly detection and one-class classification.
 
-<center><img src="https://github.com/Armanfard-Lab/DASVDD/blob/main/Figs/Overview.png" alt="Overview" width="800" align="center"></center>
+The project combines dataset-specific autoencoders with an SVDD-inspired objective to learn compact representations of normal data and score anomalies through reconstruction quality and distance to a learned center.
+
+## Highlights
+
+- Supports `MNIST`, `FMNIST`, `CIFAR`, `Speech`, and `PIMA`
+- Includes dataset-specific autoencoder architectures
+- Tunes the SVDD weighting term before training
+- Uses deterministic preprocessing for reproducible runs
+- Provides a simple command-line interface for running experiments
+
+## Repository layout
+
+```text
+.
+├── main.py               # CLI entry point
+├── src/
+│   ├── core/             # Training, evaluation, and gamma tuning
+│   ├── data/             # Dataset loaders and preprocessing helpers
+│   └── models/           # Dataset-specific autoencoders
+├── data/                 # Local tabular datasets
+└── requirements.txt      # Python dependencies
+```
+
+## Installation
+
+```bash
+git clone https://github.com/Armanfard-Lab/DASVDD.git
+cd DASVDD
+
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+## Usage
+
+Run DASVDD on any supported dataset:
+
+```bash
+python3 main.py --dataset MNIST --target_class 0 --epochs 30 --batch_size 128
+```
+
+Example runs:
+
+```bash
+python3 main.py --dataset FMNIST --target_class 3 --epochs 20
+python3 main.py --dataset CIFAR --target_class 1 --epochs 10
+python3 main.py --dataset PIMA --epochs 30
+python3 main.py --dataset Speech --epochs 30
+```
+
+For `Speech` and `PIMA`, `--target_class` is ignored because the datasets already include anomaly labels.
+
+## Command-line arguments
+
+| Argument | Description | Default |
+| --- | --- | --- |
+| `--dataset` | Dataset to use for training and evaluation | Required |
+| `--target_class` | Normal class for one-class image datasets | `0` |
+| `--epochs` | Number of training epochs | `30` |
+| `--batch_size` | Training mini-batch size | `128` |
+
+## Datasets
+
+- `MNIST` and `FMNIST` are downloaded automatically through `torchvision`.
+- `CIFAR` is downloaded automatically and normalized with global contrast normalization.
+- `Speech` and `PIMA` are loaded from the local `data/` directory.
+- Tabular datasets are shuffled with a fixed seed before splitting so evaluation is reproducible without depending on CSV row order.
+
+## Development notes
+
+- The refactored modules expose clearer APIs under `src.core`, `src.data`, and `src.models`.
+- Backward-compatible aliases such as `DASVDD_trainer`, `DASVDD_test`, and `AE_MNIST` are still available for older notebooks or scripts.
+
+## Output
+
+The CLI prints progress for:
+
+- gamma tuning
+- DASVDD training
+- final `ROC-AUC` evaluation
 
 ## Citation
 
-You can find the preprint of our paper on [arXiv](https://arxiv.org/abs/2106.05410).
+If you use this repository in academic work, please cite:
 
-Please cite our paper if you use the results of our work.
-
-```
-@inproceedings{Hojjati2021DASVDDDA,
+```bibtex
+@ARTICLE{DASVDD,
+  author={Hojjati, Hadi and Armanfard, Narges},
+  journal={IEEE Transactions on Knowledge and Data Engineering},
   title={DASVDD: Deep Autoencoding Support Vector Data Descriptor for Anomaly Detection},
-  author={H. Hojjati and N. Armanfard},
-  year={2021}
+  year={2024},
+  volume={36},
+  number={8},
+  pages={3739-3750},
+  keywords={Anomaly detection;Training;Task analysis;Support vector machines;Image reconstruction;Data models;Benchmark testing;Anomaly detection;deep autoencoder;deep learning;support vector data descriptor},
+  doi={10.1109/TKDE.2023.3328882}
 }
 ```
 
-## Abstract
-
->Semi-supervised anomaly detection, which aims to detect anomalies from normal samples using a model that is solely trained on normal data, has been an active field of research in the past decade. With recent advancements in deep learning, particularly generative adversarial networks and autoencoders, researchers have designed efficient deep anomaly detection methods. Existing works commonly use neural networks such as an autoencoder to map the data into a new representation that is easier to work with and then apply an anomaly detection algorithm. In this paper, we propose a method, DASVDD, that jointly learns the parameters of an autoencoder while minimizing the volume of an enclosing hyper-sphere on its latent representation. We propose a customized anomaly score which is a combination of autoencoder's reconstruction error and distance of the lower-dimensional representation of a sample from the center of the enclosing hyper-sphere. Minimizing this anomaly score on the normal data during training aids us in learning the underlying distribution of normal data. Including the reconstruction error in the anomaly score ensures that DASVDD does not suffer from the common hyper-sphere collapse issue since the proposed DASVDD model does not converge to the trivial solution of mapping all inputs to a constant point in the latent representation. Experimental evaluations on several benchmark datasets from different domains show that the proposed method outperforms most of the commonly used state-of-the-art anomaly detection algorithms while maintaining robust and accurate performance across different anomaly classes.
-
-## Example Anomalies
-
-<img src="https://github.com/Armanfard-Lab/DASVDD/blob/main/Figs/anomaly.png" alt="Results" width="800">
-
-
+Paper link: [IEEE Xplore](https://ieeexplore.ieee.org/abstract/document/10314785)
