@@ -1,5 +1,9 @@
 # DASVDD
 
+[![Paper](https://img.shields.io/badge/Paper-IEEE%20Xplore-blue)](https://ieeexplore.ieee.org/document/9746207)
+[![License: CC BY-NC-SA 3.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%203.0-lightgrey.svg)](LICENSE)
+[![Python 3.8+](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
+
 Implementation of **DASVDD (Deep Autoencoding Support Vector Data Descriptor)** for anomaly detection and one-class classification.
 
 The project combines dataset-specific autoencoders with an SVDD-inspired objective to learn compact representations of normal data and score anomalies through reconstruction quality and distance to a learned center.
